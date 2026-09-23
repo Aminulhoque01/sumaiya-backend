@@ -15,7 +15,6 @@ interface MongooseCache {
 }
 
 declare global {
-  // eslint-disable-next-line no-var
   var mongooseCache: MongooseCache | undefined;
 }
 
@@ -27,12 +26,10 @@ const cached: MongooseCache = global.mongooseCache ?? {
 global.mongooseCache = cached;
 
 const connectDB = async (): Promise<typeof mongoose> => {
-  // Already connected
   if (cached.conn) {
     return cached.conn;
   }
 
-  // Connection is already in progress
   if (!cached.promise) {
     cached.promise = mongoose.connect(MONGODB_URI, {
       serverSelectionTimeoutMS: 10000,
@@ -44,13 +41,13 @@ const connectDB = async (): Promise<typeof mongoose> => {
   try {
     cached.conn = await cached.promise;
 
-    console.log("✅ MongoDB connected");
+    console.log("MongoDB connected successfully");
 
     return cached.conn;
   } catch (error) {
     cached.promise = null;
 
-    console.error("❌ MongoDB connection failed:", error);
+    console.error("MongoDB connection failed:", error);
 
     throw error;
   }

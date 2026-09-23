@@ -3,18 +3,13 @@ import connectDB from "../config/db";
 
  
 
-let isConnected = false;
-
 export default async function handler(req: any, res: any) {
   try {
-    if (!isConnected) {
-      await connectDB();
-      isConnected = true;
-    }
+    await connectDB();
 
     return app(req, res);
   } catch (error) {
-    console.error("❌ Vercel server error:", error);
+    console.error("Server error:", error);
 
     return res.status(500).json({
       success: false,
