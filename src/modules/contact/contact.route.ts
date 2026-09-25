@@ -1,13 +1,22 @@
 import { Router } from "express";
+
 import { authMiddleware } from "../../middleware/auth";
+
 import { contactController } from "./contact.controller";
 
 const contactRouter = Router();
 
-// Public
-contactRouter.post("/", contactController.createContact);
+/*
+ * Public
+ */
+contactRouter.post(
+  "/",
+  contactController.createContact
+);
 
-// Admin
+/*
+ * Admin
+ */
 contactRouter.get(
   "/",
   authMiddleware,
@@ -24,6 +33,15 @@ contactRouter.patch(
   "/:id",
   authMiddleware,
   contactController.updateContact
+);
+
+/*
+ * Reply to visitor email
+ */
+contactRouter.post(
+  "/:id/reply",
+  authMiddleware,
+  contactController.replyToContact
 );
 
 contactRouter.delete(

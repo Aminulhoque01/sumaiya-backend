@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
+
 import {
   ContactStatus,
   ICreateContactPayload,
+  IReplyContactPayload,
   IUpdateContactPayload,
 } from "./contact.interface";
+
 import { contactService } from "./contact.service";
 
 const createContact = async (
@@ -11,15 +14,18 @@ const createContact = async (
   res: Response
 ): Promise<void> => {
   try {
-    const payload = req.body as ICreateContactPayload;
+    const payload =
+      req.body as ICreateContactPayload;
 
-    const contact = await contactService.createContact(
-      payload
-    );
+    const contact =
+      await contactService.createContact(
+        payload
+      );
 
     res.status(201).json({
       success: true,
-      message: "Your message has been sent successfully",
+      message:
+        "Your message has been sent successfully",
       data: contact,
     });
   } catch (error) {
@@ -38,16 +44,20 @@ const getAllContacts = async (
   res: Response
 ): Promise<void> => {
   try {
-    const status = req.query.status as
-      | ContactStatus
-      | undefined;
+    const status =
+      req.query.status as
+        | ContactStatus
+        | undefined;
 
     const contacts =
-      await contactService.getAllContacts(status);
+      await contactService.getAllContacts(
+        status
+      );
 
     res.status(200).json({
       success: true,
-      message: "Contact messages retrieved successfully",
+      message:
+        "Contact messages retrieved successfully",
       data: contacts,
     });
   } catch (error) {
@@ -67,11 +77,14 @@ const getContactById = async (
 ): Promise<void> => {
   try {
     const contact =
-      await contactService.getContactById(req.params.id as string);
+      await contactService.getContactById(
+        req.params.id as string
+      );
 
     res.status(200).json({
       success: true,
-      message: "Contact message retrieved successfully",
+      message:
+        "Contact message retrieved successfully",
       data: contact,
     });
   } catch (error) {
@@ -90,7 +103,8 @@ const updateContact = async (
   res: Response
 ): Promise<void> => {
   try {
-    const payload = req.body as IUpdateContactPayload;
+    const payload =
+      req.body as IUpdateContactPayload;
 
     const contact =
       await contactService.updateContact(
@@ -100,7 +114,8 @@ const updateContact = async (
 
     res.status(200).json({
       success: true,
-      message: "Contact status updated successfully",
+      message:
+        "Contact status updated successfully",
       data: contact,
     });
   } catch (error) {
@@ -114,16 +129,50 @@ const updateContact = async (
   }
 };
 
+const replyToContact = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const payload =
+      req.body as IReplyContactPayload;
+
+    const contact =
+      await contactService.replyToContact(
+        req.params.id as string,
+        payload
+      );
+
+    res.status(200).json({
+      success: true,
+      message:
+        "Reply sent successfully",
+      data: contact,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Failed to send reply",
+    });
+  }
+};
+
 const deleteContact = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    await contactService.deleteContact(req.params.id as string);
+    await contactService.deleteContact(
+      req.params.id as string
+    );
 
     res.status(200).json({
       success: true,
-      message: "Contact message deleted successfully",
+      message:
+        "Contact message deleted successfully",
     });
   } catch (error) {
     res.status(404).json({
@@ -141,5 +190,6 @@ export const contactController = {
   getAllContacts,
   getContactById,
   updateContact,
+  replyToContact,
   deleteContact,
 };

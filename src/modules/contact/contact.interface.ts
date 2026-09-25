@@ -6,6 +6,12 @@ export type ContactStatus =
   | "REPLIED"
   | "ARCHIVED";
 
+export interface IContactReply {
+  message: string;
+  sentAt: Date;
+  messageId?: string;
+}
+
 export interface IContact extends Document {
   name: string;
   email: string;
@@ -14,6 +20,8 @@ export interface IContact extends Document {
   message: string;
 
   status: ContactStatus;
+
+  replies: IContactReply[];
 
   createdAt: Date;
   updatedAt: Date;
@@ -29,4 +37,8 @@ export interface ICreateContactPayload {
 
 export interface IUpdateContactPayload {
   status?: ContactStatus;
+}
+
+export interface IReplyContactPayload {
+  message: string;
 }

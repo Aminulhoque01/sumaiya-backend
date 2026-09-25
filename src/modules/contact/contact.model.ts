@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+
 import {
   ContactStatus,
   IContact,
@@ -52,6 +53,29 @@ const contactSchema = new Schema<IContact>(
         message: "Invalid contact status",
       },
       default: "NEW",
+    },
+
+    replies: {
+      type: [
+        {
+          message: {
+            type: String,
+            required: true,
+            trim: true,
+            maxlength: 10000,
+          },
+
+          sentAt: {
+            type: Date,
+            default: Date.now,
+          },
+
+          messageId: {
+            type: String,
+          },
+        },
+      ],
+      default: [],
     },
   },
   {
