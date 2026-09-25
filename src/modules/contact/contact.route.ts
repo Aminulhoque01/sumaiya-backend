@@ -39,7 +39,7 @@ contactRouter.patch(
  * Reply to visitor email
  */
 contactRouter.post(
-  "/:id/reply",
+  "/:id",
   authMiddleware,
   contactController.replyToContact
 );
