@@ -11,10 +11,40 @@ const parsePayload = (data: unknown) => {
   try {
     return JSON.parse(data);
   } catch {
-    throw new Error(
-      "Invalid JSON data in request"
-    );
+    throw new Error("Invalid JSON data in request");
   }
+};
+
+const getRequestPayload = (req: Request) => {
+  /**
+   * Supports both:
+   *
+   * 1. JSON body
+   * {
+   *   title: "...",
+   *   slug: "..."
+   * }
+   *
+   * 2. Multipart form-data
+   * data: JSON.stringify({...})
+   */
+
+  const rawPayload =
+    req.body?.data !== undefined
+      ? req.body.data
+      : req.body;
+
+  const payload = parsePayload(rawPayload);
+
+  if (
+    !payload ||
+    typeof payload !== "object" ||
+    Array.isArray(payload)
+  ) {
+    throw new Error("Invalid service payload");
+  }
+
+  return payload;
 };
 
 const createService = async (
@@ -22,9 +52,7 @@ const createService = async (
   res: Response
 ) => {
   try {
-    const payload = parsePayload(
-      req.body.data
-    );
+    const payload = getRequestPayload(req);
 
     const imageFile = req.file;
 
@@ -104,7 +132,11 @@ const getServiceById = async (
   res: Response
 ) => {
   try {
-    if (!Types.ObjectId.isValid(req.params.id as string)) {
+    if (
+      !Types.ObjectId.isValid(
+        req.params.id as string
+      )
+    ) {
       throw new Error("Invalid service ID");
     }
 
@@ -160,13 +192,15 @@ const updateService = async (
   res: Response
 ) => {
   try {
-    if (!Types.ObjectId.isValid(req.params.id as string)) {
+    if (
+      !Types.ObjectId.isValid(
+        req.params.id as string
+      )
+    ) {
       throw new Error("Invalid service ID");
     }
 
-    const payload = parsePayload(
-      req.body.data
-    );
+    const payload = getRequestPayload(req);
 
     const imageFile = req.file;
 
@@ -198,7 +232,11 @@ const deleteService = async (
   res: Response
 ) => {
   try {
-    if (!Types.ObjectId.isValid(req.params.id as string)) {
+    if (
+      !Types.ObjectId.isValid(
+        req.params.id as string
+      )
+    ) {
       throw new Error("Invalid service ID");
     }
 

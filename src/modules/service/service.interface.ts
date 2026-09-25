@@ -8,7 +8,7 @@ export interface IServiceImage {
 
 export interface IService extends Document {
   title: string;
-  slug: string;
+  slug?: string;
   shortDescription: string;
   description?: string;
 
